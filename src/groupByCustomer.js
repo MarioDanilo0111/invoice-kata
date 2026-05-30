@@ -25,12 +25,28 @@ function groupByCustomer(invoices) {
     grouped[toSort].invoices.sort((a, b) => b.amount - a.amount);
   }
 
-  const summary = Object.keys(grouped).map((customer) => ({
-    customer: customer,
-    total: grouped[customer].total,
-    unpaid: grouped[customer].unpaid,
-    invoices: grouped[customer].invoices,
-  }));
+  function formatInvoice(invoices) {
+    return invoices.map((item) => ({
+      id: item.id,
+      amount: item.amount,
+      status: item.status,
+    }));
+  }
+
+  const summary = Object.keys(grouped).map((customer) => {
+    const group = grouped[customer];
+
+    return {
+      customer,
+      total: group.total,
+      unpaid: group.unpaid,
+      paid: group.total - group.unpaid,
+      invoiceCount: group.invoices.length,
+      invoices: formatInvoice(group.invoices),
+    };
+  });
+
+  console.log(summary);
 
   return { grouped: grouped, summary: summary };
 }
